@@ -12,21 +12,4 @@ Built in Rust 🦀 using:
 
 You can also specify the URL of the Aeron-Cache API in an environment variable called ```AERON_CACHE_API_URL``` for convenience.
 
-```
-$ ./CacheCLI 
-A CLI for interacting with Aeron Cache - https://github.com/bhf/aeron-cache
-
-Usage: CacheCLI [OPTIONS] <COMMAND>
-
-Commands:
-  create  Create a new cache
-  insert  Insert an item into a cache
-  get     Get an item from a cache
-  remove  Remove an item from a cache
-  delete  Delete a cache
-  help    Print this message or the help of the given subcommand(s)
-
-Options:
-      --api-url <API_URL>  Aeron Cache API base URL [default: http://localhost:8080/cache]
-  -h, --help               Print help
-```
+[![asciinema demo](https://asciinema.org/a/OsG3m10NT73rrwYVDygOZjEjP.svg)](https://asciinema.org/a/OsG3m10NT73rrwYVDygOZjEjP)
