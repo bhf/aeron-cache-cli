@@ -8,3 +8,22 @@ Built in Rust 🦀 using:
 * [Dialoguer](https://github.com/console-rs/dialoguer)
 * [Reqwest](https://github.com/seanmonstar/reqwest)
 * [Serde](https://github.com/serde-rs/serde)
+
+
+```bash
+A CLI for interacting with Aeron Cache - https://github.com/bhf/aeron-cache
+
+Usage: CacheCLI [OPTIONS] <COMMAND>
+
+Commands:
+  create  Create a new cache
+  insert  Insert an item into a cache
+  get     Get an item from a cache
+  remove  Remove an item from a cache
+  delete  Delete a cache
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+      --api-url <API_URL>  Aeron Cache API base URL [default: http://localhost:8080/cache]
+  -h, --help               Print help
+```
