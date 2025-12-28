@@ -12,7 +12,8 @@ Built in Rust 🦀 using:
 
 You can also specify the URL of the Aeron-Cache API in an environment variable called ```AERON_CACHE_API_URL``` for convenience.
 
-```bash
+```
+$ ./CacheCLI 
 A CLI for interacting with Aeron Cache - https://github.com/bhf/aeron-cache
 
 Usage: CacheCLI [OPTIONS] <COMMAND>
