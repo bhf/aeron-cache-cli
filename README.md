@@ -10,6 +10,8 @@ Built in Rust 🦀 using:
 * [Serde](https://github.com/serde-rs/serde)
 
 
+You can also specify the URL of the Aeron-Cache API in an environment variable called ```AERON_CACHE_API_URL``` for convenience.
+
 ```bash
 A CLI for interacting with Aeron Cache - https://github.com/bhf/aeron-cache
 
