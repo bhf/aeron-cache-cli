@@ -9,7 +9,8 @@ pub(crate) struct ErrorResponse {
 #[allow(non_snake_case)]
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct CreateResponse {
-    pub(crate) cacheId: i64,
+    pub(crate) cacheId: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
