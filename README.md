@@ -12,4 +12,4 @@ Built in Rust 🦀 using:
 
 You can also specify the URL of the Aeron-Cache API in an environment variable called ```AERON_CACHE_API_URL``` for convenience.
 
-[![asciinema demo](https://asciinema.org/a/OsG3m10NT73rrwYVDygOZjEjP.svg)](https://asciinema.org/a/OsG3m10NT73rrwYVDygOZjEjP)
+[![asciinema demo](https://asciinema.org/a/JPbih6gJuwFHZxhj9Op64UKgN.svg)](https://asciinema.org/a/JPbih6gJuwFHZxhj9Op64UKgN)
