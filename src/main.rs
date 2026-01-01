@@ -18,7 +18,7 @@ use commands::*;
 struct Cli {
     #[arg(
         long,
-        default_value = "http://localhost:7070/api/v1",
+        default_value = "http://localhost:7070/api/v1/cache",
         help = "Aeron Cache API base URL"
     )]
     api_url: String,
@@ -73,12 +73,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let rest_client = Client::new();
 
     // Check CLI arg, then env var, then default
-    let aeron_cache_api_url = if cli.api_url != "http://localhost:7070/api/v1" {
+    let aeron_cache_api_url = if cli.api_url != "http://localhost:7070/api/v1/cache" {
         cli.api_url
     } else if let Ok(val) = env::var("AERON_CACHE_API_URL") {
         val
     } else {
-        "http://localhost:7070/api/v1".to_string()
+        "http://localhost:7070/api/v1/cache".to_string()
     };
 
     match cli.command {
@@ -86,13 +86,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             process_create_cache(&rest_client, &aeron_cache_api_url, &cache_name)?;
         }
         Commands::Insert { name: cache_name, key, value } => {
-            process_insert_item(&rest_client, &cache_name, &aeron_cache_api_url, &key, value)?;
+            process_insert_item(&rest_client, &aeron_cache_api_url, &cache_name, &key, value)?;
         }
         Commands::Get { name: cache_name, key } => {
-            process_get_item(&rest_client, &cache_name, &aeron_cache_api_url, &key)?;
+            process_get_item(&rest_client, &aeron_cache_api_url, &cache_name, &key)?;
         }
         Commands::Remove { name: cache_name, key } => {
-            process_remove_item(rest_client, &cache_name, &aeron_cache_api_url, &key)?;
+            process_remove_item(rest_client, &aeron_cache_api_url, &cache_name, &key)?;
         }
         Commands::Delete { name } => {
             if Confirm::new()

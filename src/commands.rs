@@ -12,11 +12,14 @@ pub(crate) fn process_get_item(
     cache_name: &String,
     key: &String,
 ) -> Result<(), Box<dyn Error>> {
+
+    let url = &format!(
+        "{}/{}/{}",
+        aeron_cache_api_url, cache_name, key
+    );
+
     let get_item_response = rest_client
-        .get(&format!(
-            "{}/cache/{}/{}",
-            aeron_cache_api_url, cache_name, key
-        ))
+        .get(url)
         .send()?;
 
     let body = get_item_response.text()?;
@@ -42,11 +45,14 @@ pub(crate) fn process_remove_item(
     cache_name: &String,
     key: &String,
 ) -> Result<(), Box<dyn Error>> {
+
+    let url = &format!(
+        "{}/{}/{}",
+        aeron_cache_api_url, cache_name, key
+    );
+
     let remove_item_response = rest_client
-        .delete(&format!(
-            "{}/cache/{}/{}",
-            aeron_cache_api_url, cache_name, key
-        ))
+        .delete(url)
         .send()?;
 
     let body = remove_item_response.text()?;
@@ -91,7 +97,7 @@ pub(crate) fn process_delete_cache(
 
 pub(crate) fn process_insert_item(
     rest_client: &Client,
-    aeron_cache_api_url: &str,
+    aeron_cache_api_url: &String,
     cache_name: &String,
     key: &String,
     value: String,
@@ -102,8 +108,10 @@ pub(crate) fn process_insert_item(
         value: &value,
     };
 
+    let url = &format!("{}/{}", aeron_cache_api_url, cache_name);
+
     let put_item_response = rest_client
-        .post(&format!("{}/cache/{}", aeron_cache_api_url, cache_name))
+        .post(url)
         .header(CONTENT_TYPE, "application/json")
         .body(serde_json::to_string(&put_item_request)?)
         .send()?;
@@ -129,8 +137,10 @@ pub(crate) fn process_create_cache(
 ) -> Result<(), Box<dyn Error>> {
     let create_cache_request = CreateRequest { cacheId: name };
 
+    let formatted_url = &format!("{}", aeron_cache_api_url);
+
     let create_cache_response = rest_client
-        .post(&format!("{}/{}", aeron_cache_api_url, name))
+        .post(formatted_url)
         .header(CONTENT_TYPE, "application/json")
         .body(serde_json::to_string(&create_cache_request)?)
         .send()?;
