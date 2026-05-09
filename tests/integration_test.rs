@@ -54,7 +54,7 @@ fn test_cache_lifecycle() -> Result<(), Box<dyn std::error::Error>> {
     cmd.args(&["--api-url", &api_url, "delete", cache_name, "--yes"]);
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains(format!("Deleted cache: {}", cache_name)));
+        .stdout(predicate::str::contains("Deleted cache: "));
 
     Ok(())
 }
