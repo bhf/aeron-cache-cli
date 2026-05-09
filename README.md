@@ -1,5 +1,7 @@
 # Aeron Cache CLI
 
+[![CI](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml)
+
 A CLI on top of the [Aeron Cache](https://github.com/bhf/aeron-cache) REST API.
 
 Built in Rust 🦀 using:
