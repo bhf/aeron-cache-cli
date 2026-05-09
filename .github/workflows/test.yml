@@ -30,10 +30,11 @@ jobs:
 
     - name: Start Aeron Cache Backend
       run: |
-        aeron-cache &
+        nohup aeron-cache > aeron-cache-log.txt 2>&1 &
         # Wait for the environment file to be generated in ~/.aeron-cache/
         ENV_FILE="$HOME/.aeron-cache/aeron-cache-ui.env"
 
+        for i in {1..30}; do
           if [ -f "$ENV_FILE" ]; then
             echo "Environment file found"
             break
