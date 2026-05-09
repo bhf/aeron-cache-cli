@@ -1,0 +1,57 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      run: |
+        echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    - name: Install Toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Install Aeron Cache Backend
+      run: |
+        brew tap bhf/aeron-cache
+        brew install aeron-cache
+
+    - name: Start Aeron Cache Backend
+      run: |
+        aeron-cache &
+        # Wait for the environment file to be generated in ~/.aeron-cache/
+        ENV_FILE="$HOME/.aeron-cache/aeron-cache-ui.env"
+
+          if [ -f "$ENV_FILE" ]; then
+            echo "Environment file found"
+            break
+          fi
+          echo "Waiting for $ENV_FILE..."
+          sleep 1
+        done
+        
+        # Extract the API URL
+        if [ -f "$ENV_FILE" ]; then
+          API_URL=$(grep AERON_CACHE_API "$ENV_FILE" | cut -d'=' -f2)
+          echo "Found API URL: $API_URL"
+          echo "AERON_CACHE_API_URL=$API_URL" >> $GITHUB_ENV
+        else
+          echo "Error: $ENV_FILE not found after timeout"
+          exit 1
+        fi
+
+    - name: Run Tests
+      run: cargo test
+

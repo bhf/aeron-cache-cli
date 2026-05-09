@@ -65,6 +65,8 @@ enum Commands {
     Delete {
         #[arg(help = "Name of the cache to delete")]
         name: String,
+        #[arg(short, long, help = "Automatically confirm deletion")]
+        yes: bool,
     },
 }
 
@@ -94,8 +96,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         Commands::Remove { name: cache_name, key } => {
             process_remove_item(rest_client, &aeron_cache_api_url, &cache_name, &key)?;
         }
-        Commands::Delete { name } => {
-            if Confirm::new()
+        Commands::Delete { name, yes } => {
+            if yes || Confirm::new()
                 .with_prompt(format!(
                     "Are you sure you want to delete cache '{}'? This action cannot be undone.",
                     name
@@ -110,4 +112,3 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     Ok(())
 }
-
