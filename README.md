@@ -1,4 +1,5 @@
 # Aeron Cache CLI
+![img.png](https://raw.githubusercontent.com/bhf/aeron-cache/refs/heads/main/docs/images/header.png)
 
 
 [![CI](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml)
