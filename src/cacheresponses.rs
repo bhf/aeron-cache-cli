@@ -87,7 +87,7 @@ pub(crate) struct CacheItem {
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct GetCacheResponse {
     pub(crate) cacheId: String,
-    pub(crate) status: String,
+    pub(crate) operationStatus: String,
     pub(crate) items: Option<Vec<CacheItem>>,
 }
 
@@ -102,7 +102,7 @@ pub(crate) enum GetCacheResult {
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct ClearCacheResponse {
     pub(crate) cacheId: String,
-    pub(crate) status: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -122,8 +122,8 @@ pub(crate) struct CacheDetails {
 #[allow(non_snake_case)]
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct CacheStatsResponse {
-    pub(crate) totalOps: i32,
-    pub(crate) totalCaches: i32,
-    pub(crate) totalItems: i32,
+    pub(crate) totalOpsCount: i32,
+    pub(crate) totalCachesCount: i32,
+    pub(crate) totalItemsCount: i32,
     pub(crate) errorCount: i32,
 }

@@ -171,7 +171,7 @@ pub(crate) fn process_get_cache(
     match result {
         crate::cacheresponses::GetCacheResult::Ok(resp) => {
             println!("Cache ID: {}", resp.cacheId);
-            println!("Status: {}", resp.status);
+            println!("Status: {}", resp.operationStatus);
             if let Some(items) = resp.items {
                 if items.is_empty() {
                     println!("No items in cache.");
@@ -248,9 +248,9 @@ pub(crate) fn process_get_stats(
     let body = response.text()?;
     if let Ok(stats) = serde_json::from_str::<crate::cacheresponses::CacheStatsResponse>(&body) {
         println!("Cache Statistics:");
-        println!("Total Ops: {}", stats.totalOps);
-        println!("Total Caches: {}", stats.totalCaches);
-        println!("Total Items: {}", stats.totalItems);
+        println!("Total Ops: {}", stats.totalOpsCount);
+        println!("Total Caches: {}", stats.totalCachesCount);
+        println!("Total Items: {}", stats.totalItemsCount);
         println!("Error Count: {}", stats.errorCount);
     } else {
         println!("Error parsing response: {}", body);
