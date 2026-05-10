@@ -103,7 +103,6 @@ pub(crate) fn process_insert_item(
     value: String,
 ) -> Result<(), Box<dyn Error>> {
     let put_item_request = PutItemRequest {
-        cacheId: cache_name,
         key,
         value: &value,
     };
