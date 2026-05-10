@@ -75,3 +75,55 @@ pub(crate) enum DeleteItemResult {
     Ok(DeleteItemResponse),
     Err(ErrorResponse),
 }
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct CacheItem {
+    pub(crate) key: String,
+    pub(crate) value: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct GetCacheResponse {
+    pub(crate) cacheId: String,
+    pub(crate) status: String,
+    pub(crate) items: Vec<CacheItem>,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(untagged)]
+pub(crate) enum GetCacheResult {
+    Ok(GetCacheResponse),
+    Err(ErrorResponse),
+}
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct ClearCacheResponse {
+    pub(crate) cacheId: String,
+    pub(crate) status: String,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(untagged)]
+pub(crate) enum ClearCacheResult {
+    Ok(ClearCacheResponse),
+    Err(ErrorResponse),
+}
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct CacheDetails {
+    pub(crate) cacheId: String,
+    pub(crate) itemCount: i64,
+}
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct CacheStatsResponse {
+    pub(crate) totalOps: i32,
+    pub(crate) totalCaches: i32,
+    pub(crate) totalItems: i32,
+    pub(crate) errorCount: i32,
+}

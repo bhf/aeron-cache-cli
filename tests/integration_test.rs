@@ -3,7 +3,7 @@ use predicates::prelude::*;
 use std::env;
 
 fn get_api_url() -> String {
-    env::var("AERON_CACHE_API_URL").unwrap_or_else(|_| "http://localhost:7070/api/v1/cache".to_string())
+    env::var("AERON_CACHE_API_URL").unwrap_or_else(|_| "http://localhost:7070/api/v1".to_string())
 }
 
 #[test]
@@ -59,3 +59,47 @@ fn test_cache_lifecycle() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+
+#[test]
+fn test_extended_cache_operations() -> Result<(), Box<dyn std::error::Error>> {
+    let api_url = get_api_url();
+    let cache_name = "test-extended-cache-operations-cache";
+
+    // Create Cache
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "create", cache_name]);
+    cmd.assert().success();
+
+    // Insert Item
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "insert", cache_name, "mytestkey", "mytestvalue"]);
+    cmd.assert().success();
+
+    // Get Cache
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "get-cache", cache_name]);
+    // Might contain "Key: mytestkey, Value: mytestvalue"
+    cmd.assert().success().stdout(predicate::str::contains("Key: mytestkey, Value: mytestvalue"));
+
+    // Clear Cache
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "clear-cache", cache_name]);
+    cmd.assert().success().stdout(predicate::str::contains("Cleared cache:"));
+
+    // List Caches
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "list-caches"]);
+    cmd.assert().success();
+
+    // Stats
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "stats"]);
+    cmd.assert().success().stdout(predicate::str::contains("Cache Statistics:"));
+
+    // Cleanup
+    let mut cmd = Command::cargo_bin("CacheCLI")?;
+    cmd.args(&["--api-url", &api_url, "delete", cache_name, "--yes"]);
+    cmd.assert().success();
+
+    Ok(())
+}

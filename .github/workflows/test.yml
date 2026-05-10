@@ -46,9 +46,6 @@ jobs:
         # Extract the API URL and ensure it ends with /cache
         if [ -f "$ENV_FILE" ]; then
           API_URL=$(grep AERON_CACHE_API "$ENV_FILE" | cut -d'=' -f2)
-          if [[ "$API_URL" != */cache ]]; then
-            API_URL="${API_URL%/}/cache"
-          fi
           echo "Found API URL: $API_URL"
           echo "AERON_CACHE_API_URL=$API_URL" >> $GITHUB_ENV
         else

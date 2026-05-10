@@ -18,7 +18,7 @@ use commands::*;
 struct Cli {
     #[arg(
         long,
-        default_value = "http://localhost:7070/api/v1/cache",
+        default_value = "http://localhost:7070/api/v1",
         help = "Aeron Cache API base URL"
     )]
     api_url: String,
@@ -68,6 +68,24 @@ enum Commands {
         #[arg(short, long, help = "Automatically confirm deletion")]
         yes: bool,
     },
+
+    #[command(about = "Get all items from a cache")]
+    GetCache {
+        #[arg(help = "Name of the cache")]
+        name: String,
+    },
+
+    #[command(about = "Clear all items from a cache")]
+    ClearCache {
+        #[arg(help = "Name of the cache to clear")]
+        name: String,
+    },
+
+    #[command(about = "List all caches")]
+    ListCaches,
+
+    #[command(about = "Get global cache statistics")]
+    Stats,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -75,12 +93,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let rest_client = Client::new();
 
     // Check CLI arg, then env var, then default
-    let aeron_cache_api_url = if cli.api_url != "http://localhost:7070/api/v1/cache" {
+    let aeron_cache_api_url = if cli.api_url != "http://localhost:7070/api/v1" {
         cli.api_url
     } else if let Ok(val) = env::var("AERON_CACHE_API_URL") {
         val
     } else {
-        "http://localhost:7070/api/v1/cache".to_string()
+        "http://localhost:7070/api/v1".to_string()
     };
 
     match cli.command {
@@ -108,6 +126,18 @@ fn main() -> Result<(), Box<dyn Error>> {
             } else {
                 println!("Cache '{}' not deleted", name)
             }
+        }
+        Commands::GetCache { name: cache_name } => {
+            process_get_cache(&rest_client, &aeron_cache_api_url, &cache_name)?;
+        }
+        Commands::ClearCache { name: cache_name } => {
+            process_clear_cache(&rest_client, &aeron_cache_api_url, &cache_name)?;
+        }
+        Commands::ListCaches => {
+            process_list_caches(&rest_client, &aeron_cache_api_url)?;
+        }
+        Commands::Stats => {
+            process_get_stats(&rest_client, &aeron_cache_api_url)?;
         }
     }
     Ok(())
