@@ -25,6 +25,7 @@ pub(crate) enum CreateCacheResult {
 pub(crate) struct PutItemResponse {
     pub(crate) cacheId: String,
     pub(crate) key: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -38,6 +39,7 @@ pub(crate) enum PutItemResult {
 #[derive(serde::Deserialize, Debug)]
 pub(crate) struct DeleteCacheResponse {
     pub(crate) cacheId: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -53,6 +55,7 @@ pub(crate) struct GetItemResponse {
     pub(crate) cacheId: String,
     pub(crate) key: String,
     pub(crate) value: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -67,6 +70,7 @@ pub(crate) enum GetItemResult {
 pub(crate) struct DeleteItemResponse {
     pub(crate) cacheId: String,
     pub(crate) key: String,
+    pub(crate) operationStatus: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
