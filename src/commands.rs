@@ -172,12 +172,16 @@ pub(crate) fn process_get_cache(
         crate::cacheresponses::GetCacheResult::Ok(resp) => {
             println!("Cache ID: {}", resp.cacheId);
             println!("Status: {}", resp.status);
-            if resp.items.is_empty() {
-                println!("No items in cache.");
-            } else {
-                for item in resp.items {
-                    println!("Key: {}, Value: {}", item.key, item.value);
+            if let Some(items) = resp.items {
+                if items.is_empty() {
+                    println!("No items in cache.");
+                } else {
+                    for item in items {
+                        println!("Key: {}, Value: {}", item.key, item.value);
+                    }
                 }
+            } else {
+                println!("No items in cache.");
             }
         }
         crate::cacheresponses::GetCacheResult::Err(err) => {

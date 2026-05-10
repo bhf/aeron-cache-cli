@@ -88,7 +88,7 @@ pub(crate) struct CacheItem {
 pub(crate) struct GetCacheResponse {
     pub(crate) cacheId: String,
     pub(crate) status: String,
-    pub(crate) items: Vec<CacheItem>,
+    pub(crate) items: Option<Vec<CacheItem>>,
 }
 
 #[derive(serde::Deserialize, Debug)]
