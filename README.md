@@ -6,6 +6,11 @@
 
 A CLI on top of the [Aeron Cache](https://github.com/bhf/aeron-cache) REST API.
 
+```bash
+brew tap bhf/aeron-cache-cli
+brew install aeron-cache-cli
+```
+
 Built in Rust 🦀 using:
 
 * [Clap](https://github.com/clap-rs/clap)
