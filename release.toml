@@ -1,0 +1,13 @@
+# .release.toml
+# Configuration for cargo-release
+
+# We use GitHub Actions for releasing to Homebrew as a binary,
+# so we disable publishing to crates.io (unless you want to publish it there too).
+publish = false
+
+# Do not create a release commit/tag if there are uncommitted changes
+pre-release-commit-message = "chore: release {{version}}"
+tag-message = "Release {{version}}"
+
+# Automatically push the tag and commits to the remote
+push = true
