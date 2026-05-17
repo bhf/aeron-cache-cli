@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            archive: tar.gz
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            archive: tar.gz
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Build release
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package artifacts
+        run: |
+          mkdir -p package
+          cp target/${{ matrix.target }}/release/CacheCLI package/aeron-cache-cli
+          cp README.md package/ || true
+          cd package
+          tar -czf ../aeron-cache-cli-${{ matrix.target }}.tar.gz *
+
+      - name: Make Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: aeron-cache-cli-${{ matrix.target }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-homebrew-tap:
+    name: Update Homebrew Tap
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Formula
+        env:
+          # Create an access token (PAT) with repo scope and set it as TAP_GITHUB_TOKEN in aeron-cache-cli repo secrets
+          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          MAC_INTEL_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/aeron-cache-cli-x86_64-apple-darwin.tar.gz"
+          MAC_ARM_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/aeron-cache-cli-aarch64-apple-darwin.tar.gz"
+          LINUX_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/aeron-cache-cli-x86_64-unknown-linux-gnu.tar.gz"
+
+          # Function to get sha256
+          get_sha() {
+            curl -sL "$1" | shasum -a 256 | awk '{print $1}'
+          }
+
+          MAC_INTEL_SHA=$(get_sha $MAC_INTEL_URL)
+          MAC_ARM_SHA=$(get_sha $MAC_ARM_URL)
+          LINUX_SHA=$(get_sha $LINUX_URL)
+
+          cat << EOF > aeron-cache-cli.rb
+          class AeronCacheCli < Formula
+            desc "Aeron Cache Command Line Interface"
+            homepage "https://github.com/${{ github.repository }}"
+            version "${VERSION}"
+
+            on_macos do
+              if Hardware::CPU.intel?
+                url "${MAC_INTEL_URL}"
+                sha256 "${MAC_INTEL_SHA}"
+              elsif Hardware::CPU.arm?
+                url "${MAC_ARM_URL}"
+                sha256 "${MAC_ARM_SHA}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.intel?
+                url "${LINUX_URL}"
+                sha256 "${LINUX_SHA}"
+              end
+            end
+
+            def install
+              bin.install "aeron-cache-cli" => "CacheCLI"
+            end
+
+            test do
+              system "#{bin}/CacheCLI", "--version"
+            end
+          end
+          EOF
+
+          # Commit to tap repo
+          git clone https://x-access-token:${TAP_GITHUB_TOKEN}@github.com/${{ github.repository_owner }}/homebrew-aeron-cache-cli.git
+          cd homebrew-aeron-cache-cli
+          mkdir -p Formula
+          cp ../aeron-cache-cli.rb Formula/aeron-cache-cli.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/aeron-cache-cli.rb
+          git commit -m "Update aeron-cache-cli to ${VERSION}"
+          git push
