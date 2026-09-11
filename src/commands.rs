@@ -1,6 +1,7 @@
-use crate::cacherequests::{CreateRequest, PutItemRequest};
+use crate::cacherequests::{CreateRequest, PutItemRequest, PutTimedItemRequest};
 use crate::cacheresponses::{
-    CreateCacheResult, DeleteCacheResult, DeleteItemResult, GetItemResult, PutItemResult,
+    CancelItemRemovalResult, CreateCacheResult, DeleteCacheResult, DeleteItemResult, GetItemResult,
+    PutItemResult, PutTimedItemResult,
 };
 use reqwest::blocking::Client;
 use reqwest::header::CONTENT_TYPE;
@@ -121,6 +122,78 @@ pub(crate) fn process_insert_item(
     match result {
         PutItemResult::Ok(resp) => println!("Put item into cache with id: {}", resp.cacheId),
         PutItemResult::Err(err) => {
+            println!("Error: {}", err.errorMsg);
+            println!("Help: {}", err.helpMsg);
+        }
+    }
+
+    Ok(())
+}
+
+pub(crate) fn process_put_timed_item(
+    rest_client: &Client,
+    aeron_cache_api_url: &str,
+    cache_name: &String,
+    key: &String,
+    value: &String,
+    ttl: i64,
+) -> Result<(), Box<dyn Error>> {
+    let put_timed_item_request = PutTimedItemRequest {
+        key,
+        value,
+        ttl,
+    };
+
+    let url = &format!("{}/cache/timed/{}", aeron_cache_api_url, cache_name);
+
+    let put_timed_item_response = rest_client
+        .post(url)
+        .header(CONTENT_TYPE, "application/json")
+        .body(serde_json::to_string(&put_timed_item_request)?)
+        .send()?;
+
+    let body = put_timed_item_response.text()?;
+    let result: PutTimedItemResult = serde_json::from_str(&body)?;
+
+    match result {
+        PutTimedItemResult::Ok(resp) => println!(
+            "Put timed item into cache {} on key {} with ttl {}ms",
+            resp.cacheId, resp.key, ttl
+        ),
+        PutTimedItemResult::Err(err) => {
+            println!("Error: {}", err.errorMsg);
+            println!("Help: {}", err.helpMsg);
+        }
+    }
+
+    Ok(())
+}
+
+pub(crate) fn process_cancel_item_removal(
+    rest_client: &Client,
+    aeron_cache_api_url: &str,
+    cache_name: &String,
+    key: &String,
+) -> Result<(), Box<dyn Error>> {
+    let url = &format!(
+        "{}/cache/{}/{}/cancel-removal",
+        aeron_cache_api_url, cache_name, key
+    );
+
+    let response = rest_client
+        .post(url)
+        .header(CONTENT_TYPE, "application/json")
+        .send()?;
+
+    let body = response.text()?;
+    let result: CancelItemRemovalResult = serde_json::from_str(&body)?;
+
+    match result {
+        CancelItemRemovalResult::Ok(resp) => println!(
+            "Cancelled scheduled removal of item in cache {} on key {}",
+            resp.cacheId, resp.key
+        ),
+        CancelItemRemovalResult::Err(err) => {
             println!("Error: {}", err.errorMsg);
             println!("Help: {}", err.helpMsg);
         }

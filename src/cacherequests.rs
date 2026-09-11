@@ -12,3 +12,11 @@ pub(crate) struct PutItemRequest<'a> {
     pub(crate) key: &'a str,
     pub(crate) value: &'a str,
 }
+
+#[allow(non_snake_case)]
+#[derive(Serialize)]
+pub(crate) struct PutTimedItemRequest<'a> {
+    pub(crate) key: &'a str,
+    pub(crate) value: &'a str,
+    pub(crate) ttl: i64,
+}

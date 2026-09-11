@@ -24,6 +24,10 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
 
     - name: Install Aeron Cache Backend
+      env:
+        HOMEBREW_NO_AUTO_UPDATE: "1"
+        HOMEBREW_NO_INSTALL_CLEANUP: "1"
+        HOMEBREW_NO_REQUIRE_TAP_TRUST: "1"
       run: |
         brew tap bhf/aeroncache
         brew install aeron-cache
