@@ -27,15 +27,35 @@ By default, the CLI assumes that your backend cache service is reachable at `htt
 ## Available commands
 
 It exposes the following commands:
+
+### Cache commands
 - `create <name>`: Create a new cache
 - `delete <name>`: Delete a cache
 - `get-cache <name>`: Get all items from a cache
 - `clear-cache <name>`: Clear all items from a cache
 - `insert <name> <key> <value>`: Insert an item into a cache
+- `insert-timed <name> <key> <value> <ttl>`: Insert an item with a time-to-live (milliseconds) into a cache
 - `get <name> <key>`: Get an item from a cache
 - `remove <name> <key>`: Remove an item from a cache
+- `cancel-removal <name> <key>`: Cancel a scheduled removal of an item
 - `list-caches`: List all available caches and their item count
 - `stats`: Get global cache statistics
+
+### Counter commands
+- `create-counter-cache <name>`: Create a new counter cache
+- `delete-counter-cache <name>`: Delete a counter cache
+- `get-counter-cache <name>`: Get all counters from a counter cache
+- `clear-counter-cache <name>`: Clear all counters from a counter cache
+- `put-counter <name> <key> <value>`: Put a counter into a counter cache
+- `put-timed-counter <name> <key> <value> <ttl>`: Put a counter with a time-to-live (milliseconds) into a counter cache
+- `get-counter <name> <key>`: Get a single counter from a counter cache
+- `delete-counter <name> <key>`: Delete a single counter from a counter cache
+- `increment-counter <name> <key> [amount]`: Increment a counter (defaults to 1)
+- `decrement-counter <name> <key> [amount]`: Decrement a counter (defaults to 1)
+- `set-counter <name> <key> <value>`: Set a counter to a given value
+- `cancel-counter-removal <name> <key>`: Cancel a scheduled removal of a counter
+- `list-counter-caches`: List all available counter caches and their item count
+- `counter-stats`: Get global counter cache statistics
 
 Use the `--help` flag anytime for more information.
 

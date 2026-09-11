@@ -131,3 +131,33 @@ pub(crate) struct CacheStatsResponse {
     pub(crate) totalItemsCount: i32,
     pub(crate) errorCount: i32,
 }
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct PutTimedItemResponse {
+    pub(crate) cacheId: String,
+    pub(crate) key: String,
+    pub(crate) operationStatus: String,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(untagged)]
+pub(crate) enum PutTimedItemResult {
+    Ok(PutTimedItemResponse),
+    Err(ErrorResponse),
+}
+
+#[allow(non_snake_case)]
+#[derive(serde::Deserialize, Debug)]
+pub(crate) struct CancelItemRemovalResponse {
+    pub(crate) cacheId: String,
+    pub(crate) key: String,
+    pub(crate) operationStatus: String,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(untagged)]
+pub(crate) enum CancelItemRemovalResult {
+    Ok(CancelItemRemovalResponse),
+    Err(ErrorResponse),
+}
