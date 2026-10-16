@@ -24,6 +24,12 @@ pub(crate) fn process_get_item(
         .send()?;
 
     let body = get_item_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: GetItemResult = serde_json::from_str(&body)?;
 
     match result {
@@ -57,6 +63,12 @@ pub(crate) fn process_remove_item(
         .send()?;
 
     let body = remove_item_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: DeleteItemResult = serde_json::from_str(&body)?;
 
     match result {
@@ -83,6 +95,12 @@ pub(crate) fn process_delete_cache(
         .send()?;
 
     let body = delete_cache_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: DeleteCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -117,6 +135,12 @@ pub(crate) fn process_insert_item(
         .send()?;
 
     let body = put_item_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: PutItemResult = serde_json::from_str(&body)?;
 
     match result {
@@ -153,6 +177,12 @@ pub(crate) fn process_put_timed_item(
         .send()?;
 
     let body = put_timed_item_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: PutTimedItemResult = serde_json::from_str(&body)?;
 
     match result {
@@ -186,6 +216,12 @@ pub(crate) fn process_cancel_item_removal(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: CancelItemRemovalResult = serde_json::from_str(&body)?;
 
     match result {
@@ -218,6 +254,12 @@ pub(crate) fn process_create_cache(
         .send()?;
 
     let body = create_cache_response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: CreateCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -239,6 +281,9 @@ pub(crate) fn process_get_cache(
     let url = &format!("{}/cache/{}", aeron_cache_api_url, cache_name);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     let result: crate::cacheresponses::GetCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -273,6 +318,9 @@ pub(crate) fn process_clear_cache(
     let url = &format!("{}/cache/{}", aeron_cache_api_url, cache_name);
     let response = rest_client.patch(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     let result: crate::cacheresponses::ClearCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -294,6 +342,9 @@ pub(crate) fn process_list_caches(
     let url = &format!("{}/caches", aeron_cache_api_url);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     
     // According to openapi.yaml, GET /api/v1/caches returns an array of CacheDetails directly.
     // If it's an error, it might not be ErrorResponse? The spec doesn't list 400 for GetCaches, just 200.
@@ -319,6 +370,9 @@ pub(crate) fn process_get_stats(
     let url = &format!("{}/stats", aeron_cache_api_url);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     if let Ok(stats) = serde_json::from_str::<crate::cacheresponses::CacheStatsResponse>(&body) {
         println!("Cache Statistics:");
         println!("Total Ops: {}", stats.totalOpsCount);

@@ -4,6 +4,7 @@ mod cacheresponses;
 mod counterscommands;
 mod countersrequests;
 mod countersresponses;
+mod output;
 
 use clap::{Parser, Subcommand};
 use dialoguer::Confirm;
@@ -26,6 +27,9 @@ struct Cli {
         help = "Aeron Cache API base URL"
     )]
     api_url: String,
+
+    #[arg(long, global = true, help = "Output the raw JSON response instead of human-readable text")]
+    json: bool,
 
     #[command(subcommand)]
     command: Commands,
@@ -223,6 +227,7 @@ enum Commands {
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     let rest_client = Client::new();
+    output::set_json(cli.json);
 
     // Check CLI arg, then env var, then default
     let aeron_cache_api_url = if cli.api_url != "http://localhost:7070/api/v1" {
@@ -262,7 +267,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             {
                 process_delete_cache(&rest_client, &aeron_cache_api_url, &name)?;
             } else {
-                println!("Cache '{}' not deleted", name)
+                if output::is_json() {
+                    println!("{}", serde_json::json!({ "cacheId": name, "deleted": false }));
+                } else {
+                    println!("Cache '{}' not deleted", name)
+                }
             }
         }
         Commands::GetCache { name: cache_name } => {
@@ -320,7 +329,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             {
                 process_delete_counter_cache(&rest_client, &aeron_cache_api_url, &name)?;
             } else {
-                println!("Counter cache '{}' not deleted", name)
+                if output::is_json() {
+                    println!("{}", serde_json::json!({ "cacheId": name, "deleted": false }));
+                } else {
+                    println!("Counter cache '{}' not deleted", name)
+                }
             }
         }
         Commands::ListCounterCaches => {
