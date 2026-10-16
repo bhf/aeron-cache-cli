@@ -26,7 +26,7 @@ fn mock_server(body: &'static str) -> String {
 
 fn run_json(body: &'static str, args: &[&str]) -> (String, Value) {
     let url = mock_server(body);
-    let mut cmd = Command::cargo_bin("CacheCLI").unwrap();
+    let mut cmd = Command::cargo_bin("ac-cli").unwrap();
     cmd.args(["--api-url", &url]).args(args);
     let out = cmd.assert().success().get_output().stdout.clone();
     let text = String::from_utf8(out).unwrap();
@@ -87,7 +87,7 @@ fn json_unparseable_body_is_not_an_error() {
 #[test]
 fn without_flag_output_is_human_readable() {
     let url = mock_server(r#"{"cacheId":"c","operationStatus":"OK"}"#);
-    Command::cargo_bin("CacheCLI")
+    Command::cargo_bin("ac-cli")
         .unwrap()
         .args(["--api-url", &url, "create", "c"])
         .assert()

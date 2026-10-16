@@ -17,7 +17,7 @@ use counterscommands::*;
 
 #[derive(Parser)]
 #[command(
-    name = "cache-cli",
+    name = "ac-cli",
     about = "A CLI for interacting with Aeron Cache - https://github.com/bhf/aeron-cache"
 )]
 struct Cli {
