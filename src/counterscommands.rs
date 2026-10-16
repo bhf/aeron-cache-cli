@@ -28,6 +28,12 @@ pub(crate) fn process_create_counter_cache(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: CreateCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -61,6 +67,12 @@ pub(crate) fn process_put_counter(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: PutCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -96,6 +108,12 @@ pub(crate) fn process_put_timed_counter(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: PutTimedCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -123,6 +141,12 @@ pub(crate) fn process_get_counter(
     let response = rest_client.get(url).send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: GetCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -150,6 +174,12 @@ pub(crate) fn process_delete_counter(
     let response = rest_client.delete(url).send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: DeleteCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -176,6 +206,12 @@ pub(crate) fn process_delete_counter_cache(
     let response = rest_client.delete(url).send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: DeleteCounterCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -199,6 +235,9 @@ pub(crate) fn process_get_counter_cache(
     let url = &format!("{}/counters/{}", aeron_cache_api_url, cache_name);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     let result: GetCountersResult = serde_json::from_str(&body)?;
 
     match result {
@@ -233,6 +272,9 @@ pub(crate) fn process_clear_counter_cache(
     let url = &format!("{}/counters/{}", aeron_cache_api_url, cache_name);
     let response = rest_client.patch(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     let result: ClearCounterCacheResult = serde_json::from_str(&body)?;
 
     match result {
@@ -265,6 +307,12 @@ pub(crate) fn process_increment_counter(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: IncrementCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -299,6 +347,12 @@ pub(crate) fn process_decrement_counter(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: DecrementCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -333,6 +387,12 @@ pub(crate) fn process_set_counter(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: SetCounterResult = serde_json::from_str(&body)?;
 
     match result {
@@ -366,6 +426,12 @@ pub(crate) fn process_cancel_counter_removal(
         .send()?;
 
     let body = response.text()?;
+
+    if crate::output::print_json_if_enabled(&body) {
+
+        return Ok(());
+
+    }
     let result: CancelCounterRemovalResult = serde_json::from_str(&body)?;
 
     match result {
@@ -389,6 +455,9 @@ pub(crate) fn process_list_counter_caches(
     let url = &format!("{}/counters-caches", aeron_cache_api_url);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
 
     if let Ok(caches) =
         serde_json::from_str::<Vec<crate::countersresponses::CounterCacheDetails>>(&body)
@@ -413,6 +482,9 @@ pub(crate) fn process_get_counter_stats(
     let url = &format!("{}/counters-stats", aeron_cache_api_url);
     let response = rest_client.get(url).send()?;
     let body = response.text()?;
+    if crate::output::print_json_if_enabled(&body) {
+        return Ok(());
+    }
     if let Ok(stats) = serde_json::from_str::<crate::countersresponses::CounterStatsResponse>(&body)
     {
         println!("Counter Cache Statistics:");
