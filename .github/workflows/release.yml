@@ -39,7 +39,7 @@ jobs:
       - name: Package artifacts
         run: |
           mkdir -p package
-          cp target/${{ matrix.target }}/release/CacheCLI package/aeron-cache-cli
+          cp target/${{ matrix.target }}/release/ac-cli package/aeron-cache-cli
           cp README.md package/ || true
           cd package
           tar -czf ../aeron-cache-cli-${{ matrix.target }}.tar.gz *
@@ -99,11 +99,11 @@ jobs:
             end
 
             def install
-              bin.install "aeron-cache-cli" => "CacheCLI"
+              bin.install "aeron-cache-cli" => "ac-cli"
             end
 
             test do
-              system "#{bin}/CacheCLI", "--version"
+              system "#{bin}/ac-cli", "--version"
             end
           end
           EOF

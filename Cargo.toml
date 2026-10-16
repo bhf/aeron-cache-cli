@@ -1,5 +1,5 @@
 [package]
-name = "CacheCLI"
+name = "ac-cli"
 version = "0.2.0"
 edition = "2024"
 

@@ -64,4 +64,4 @@ Example: `cargo run -- --api-url http://otherhost:7070/api/v1 stats`
 
 ### JSON output
 
-Pass the global `--json` flag to print the server's raw JSON response instead of human-readable text, e.g. `cache-cli --json get-cache mycache`. Server-side errors are printed as JSON too.
+Pass the global `--json` flag to print the server's raw JSON response instead of human-readable text, e.g. `ac-cli --json get-cache mycache`. Server-side errors are printed as JSON too.
