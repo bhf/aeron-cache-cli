@@ -19,7 +19,7 @@ Built in Rust 🦀 using:
 * [Serde](https://github.com/serde-rs/serde)
 
 
-[![asciinema demo](https://asciinema.org/a/JPbih6gJuwFHZxhj9Op64UKgN.svg)](https://asciinema.org/a/JPbih6gJuwFHZxhj9Op64UKgN)
+[See it in action](https://aeron-cache.pages.dev/see-it-in-action/)
 
 
 By default, the CLI assumes that your backend cache service is reachable at `http://localhost:7070/api/v1`. If you need to override the API base URL, use the `--api-url` flag or the `AERON_CACHE_API_URL` environment variable.
