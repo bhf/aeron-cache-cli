@@ -3,6 +3,7 @@
 
 
 [![CI](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml/badge.svg)](https://github.com/bhf/aeron-cache-cli/actions/workflows/test.yml)
+[![Near Cache CI](https://github.com/bhf/aeron-cache-cli/actions/workflows/near-test.yml/badge.svg)](https://github.com/bhf/aeron-cache-cli/actions/workflows/near-test.yml)
 
 A CLI on top of the [Aeron Cache](https://github.com/bhf/aeron-cache) REST API.
 
@@ -56,6 +57,17 @@ It exposes the following commands:
 - `cancel-counter-removal <name> <key>`: Cancel a scheduled removal of a counter
 - `list-counter-caches`: List all available counter caches and their item count
 - `counter-stats`: Get global counter cache statistics
+
+### Near cache commands
+
+These manage the server's local near cache and require the backend to be started with near caching enabled (`NEAR_CACHE_ENABLED=true`). When enabled, reads are served transparently from the near cache on the usual `get`/`get-cache`/`get-counter`/`get-counter-cache` commands; the commands below manage which caches are kept warm.
+
+- `prime-near-cache <name>`: Prime a near cache so its local copy is warmed up front
+- `stop-near-cache <name>`: Stop near caching a cache and drop its local copy
+- `list-near-caches`: List all caches currently held warm in the near cache
+- `prime-near-counter-cache <name>`: Prime a near counter cache so its local copy is warmed up front
+- `stop-near-counter-cache <name>`: Stop near caching a counter cache and drop its local copy
+- `list-near-counter-caches`: List all counter caches currently held warm in the near cache
 
 Use the `--help` flag anytime for more information.
 
