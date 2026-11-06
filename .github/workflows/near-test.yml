@@ -1,0 +1,75 @@
+name: Near Cache CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  # Enable the backend's near cache so the near management routes
+  # (/api/v1/near/...) are registered. HttpApplication reads this from the
+  # environment, which the backend launcher inherits.
+  NEAR_CACHE_ENABLED: "true"
+
+jobs:
+  near-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      run: |
+        echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    - name: Install Toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Install Aeron Cache Backend
+      env:
+        HOMEBREW_NO_AUTO_UPDATE: "1"
+        HOMEBREW_NO_INSTALL_CLEANUP: "1"
+        HOMEBREW_NO_REQUIRE_TAP_TRUST: "1"
+      run: |
+        brew tap bhf/aeroncache
+        brew install aeron-cache
+
+    - name: Start Aeron Cache Backend (near cache enabled)
+      run: |
+        echo "Starting backend with NEAR_CACHE_ENABLED=$NEAR_CACHE_ENABLED"
+        nohup aeron-cache > aeron-cache-log.txt 2>&1 &
+        # Wait for the environment file to be generated in ~/.aeron-cache/
+        ENV_FILE="$HOME/.aeron-cache/aeron-cache-ui.env"
+
+        for i in {1..30}; do
+          if [ -f "$ENV_FILE" ]; then
+            echo "Environment file found"
+            break
+          fi
+          echo "Waiting for $ENV_FILE..."
+          sleep 1
+        done
+
+        # Extract the API URL and ensure it ends with /cache
+        if [ -f "$ENV_FILE" ]; then
+          API_URL=$(grep AERON_CACHE_API "$ENV_FILE" | cut -d'=' -f2)
+          echo "Found API URL: $API_URL"
+          echo "AERON_CACHE_API_URL=$API_URL" >> $GITHUB_ENV
+        else
+          echo "Error: $ENV_FILE not found after timeout"
+          cat aeron-cache-log.txt || true
+          exit 1
+        fi
+
+    - name: Run All Tests (near cache enabled)
+      # Run the whole suite against the near-enabled backend: --include-ignored also runs the
+      # #[ignore]'d near management tests (which the regular CI run skips). The existing read
+      # tests exercise the transparent near-cache read path here (served from the near cache,
+      # falling back to source on a miss), confirming near caching doesn't regress normal reads.
+      run: cargo test -- --include-ignored
+
+    - name: Dump backend log on failure
+      if: failure()
+      run: cat aeron-cache-log.txt || true

@@ -4,6 +4,8 @@ mod cacheresponses;
 mod counterscommands;
 mod countersrequests;
 mod countersresponses;
+mod nearcommands;
+mod nearresponses;
 mod output;
 
 use clap::{Parser, Subcommand};
@@ -14,6 +16,7 @@ use std::env;
 
 use commands::*;
 use counterscommands::*;
+use nearcommands::*;
 
 #[derive(Parser)]
 #[command(
@@ -222,6 +225,36 @@ enum Commands {
 
     #[command(about = "Get global counter cache statistics")]
     CounterStats,
+
+    #[command(about = "Prime a near cache so its local copy is warmed up front")]
+    PrimeNearCache {
+        #[arg(help = "Name of the cache to prime in the near cache")]
+        name: String,
+    },
+
+    #[command(about = "Stop near caching a cache and drop its local copy")]
+    StopNearCache {
+        #[arg(help = "Name of the cache to stop near caching")]
+        name: String,
+    },
+
+    #[command(about = "List all caches currently held warm in the near cache")]
+    ListNearCaches,
+
+    #[command(about = "Prime a near counter cache so its local copy is warmed up front")]
+    PrimeNearCounterCache {
+        #[arg(help = "Name of the counter cache to prime in the near cache")]
+        name: String,
+    },
+
+    #[command(about = "Stop near caching a counter cache and drop its local copy")]
+    StopNearCounterCache {
+        #[arg(help = "Name of the counter cache to stop near caching")]
+        name: String,
+    },
+
+    #[command(about = "List all counter caches currently held warm in the near cache")]
+    ListNearCounterCaches,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -341,6 +374,24 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         Commands::CounterStats => {
             process_get_counter_stats(&rest_client, &aeron_cache_api_url)?;
+        }
+        Commands::PrimeNearCache { name } => {
+            process_prime_near_cache(&rest_client, &aeron_cache_api_url, &name)?;
+        }
+        Commands::StopNearCache { name } => {
+            process_stop_near_cache(&rest_client, &aeron_cache_api_url, &name)?;
+        }
+        Commands::ListNearCaches => {
+            process_list_near_caches(&rest_client, &aeron_cache_api_url)?;
+        }
+        Commands::PrimeNearCounterCache { name } => {
+            process_prime_near_counter_cache(&rest_client, &aeron_cache_api_url, &name)?;
+        }
+        Commands::StopNearCounterCache { name } => {
+            process_stop_near_counter_cache(&rest_client, &aeron_cache_api_url, &name)?;
+        }
+        Commands::ListNearCounterCaches => {
+            process_list_near_counter_caches(&rest_client, &aeron_cache_api_url)?;
         }
     }
     Ok(())
