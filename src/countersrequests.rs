@@ -2,12 +2,6 @@ use serde::Serialize;
 
 #[allow(non_snake_case)]
 #[derive(Serialize)]
-pub(crate) struct CreateCounterRequest<'a> {
-    pub(crate) cacheId: &'a str,
-}
-
-#[allow(non_snake_case)]
-#[derive(Serialize)]
 pub(crate) struct PutCounterRequest<'a> {
     pub(crate) key: &'a str,
     pub(crate) value: i64,

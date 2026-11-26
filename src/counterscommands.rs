@@ -1,5 +1,5 @@
 use crate::countersrequests::{
-    CreateCounterRequest, DecrementCounterRequest, IncrementCounterRequest, PutCounterRequest,
+    DecrementCounterRequest, IncrementCounterRequest, PutCounterRequest,
     PutTimedCounterRequest, SetCounterRequest,
 };
 use crate::countersresponses::{
@@ -17,14 +17,11 @@ pub(crate) fn process_create_counter_cache(
     aeron_cache_api_url: &str,
     name: &String,
 ) -> Result<(), Box<dyn Error>> {
-    let create_counter_request = CreateCounterRequest { cacheId: name };
-
-    let url = &format!("{}/counters/", aeron_cache_api_url);
+    let url = &format!("{}/counters/{}", aeron_cache_api_url, name);
 
     let response = rest_client
-        .post(url)
+        .put(url)
         .header(CONTENT_TYPE, "application/json")
-        .body(serde_json::to_string(&create_counter_request)?)
         .send()?;
 
     let body = response.text()?;
