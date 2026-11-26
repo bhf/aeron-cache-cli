@@ -66,8 +66,10 @@ jobs:
     - name: Run All Tests (near cache enabled)
       # Run the whole suite against the near-enabled backend: --include-ignored also runs the
       # #[ignore]'d near management tests (which the regular CI run skips). The existing read
-      # tests exercise the transparent near-cache read path here (served from the near cache,
-      # falling back to source on a miss), confirming near caching doesn't regress normal reads.
+      # tests exercise the transparent near-cache read path here: near reads are non-hydrating,
+      # so a miss starts priming and returns empty, and the local copy warms asynchronously. The
+      # read assertions poll until the near copy catches up, confirming near caching serves reads
+      # correctly without regressing the normal (near-disabled) read-through path.
       run: cargo test -- --include-ignored
 
     - name: Dump backend log on failure
