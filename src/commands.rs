@@ -1,4 +1,4 @@
-use crate::cacherequests::{CreateRequest, PutItemRequest, PutTimedItemRequest};
+use crate::cacherequests::{PutItemRequest, PutTimedItemRequest};
 use crate::cacheresponses::{
     CancelItemRemovalResult, CreateCacheResult, DeleteCacheResult, DeleteItemResult, GetItemResult,
     PutItemResult, PutTimedItemResult,
@@ -243,14 +243,11 @@ pub(crate) fn process_create_cache(
     aeron_cache_api_url: &str,
     name: &String,
 ) -> Result<(), Box<dyn Error>> {
-    let create_cache_request = CreateRequest { cacheId: name };
-
-    let formatted_url = &format!("{}/cache", aeron_cache_api_url);
+    let formatted_url = &format!("{}/cache/{}", aeron_cache_api_url, name);
 
     let create_cache_response = rest_client
-        .post(formatted_url)
+        .put(formatted_url)
         .header(CONTENT_TYPE, "application/json")
-        .body(serde_json::to_string(&create_cache_request)?)
         .send()?;
 
     let body = create_cache_response.text()?;
